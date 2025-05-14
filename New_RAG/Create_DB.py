@@ -29,10 +29,10 @@ collection = client.get_or_create_collection(name=COLLECTION_NAME)
 def load_articles(max_articles=500):
     articles_counter = 0
     id = 0
-    next_index = 0
     offsets = None
     existing_ids = collection.count()
     print(existing_ids)
+    next_index = existing_ids
 
     for filename in os.listdir(ARTICLES_DIR):
         if filename.endswith(".jsonl"):
@@ -42,7 +42,8 @@ def load_articles(max_articles=500):
                 for line in f:
                     data = json.loads(line.strip())
                     content = data["text"]
-                    splits = text_splitter.split_text(content)
+                    #splits = text_splitter.split_text(content)
+                    splits = [content]
                     for i in range(len(splits)):
                         if id >= existing_ids:
                             sentences.append(splits[i])
@@ -101,6 +102,6 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 
 if __name__ == "__main__":
-    #load_articles()
+    load_articles()
     existing_ids = collection.count()
     print(existing_ids)
